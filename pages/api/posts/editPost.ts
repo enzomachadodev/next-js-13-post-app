@@ -4,11 +4,11 @@ import { authOptions } from "../auth/[...nextauth]";
 import prisma from "../../../prisma/client";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	if (req.method === "DELETE") {
+	if (req.method === "PATCH") {
 		const session = await getServerSession(req, res, authOptions);
 
 		if (!session) return res.status(401).json({ message: "Please sign in" });
-		const postId = req.body;
+		const postId = req.body.id;
 		const post = await prisma.post.findUnique({
 			where: {
 				id: postId,
@@ -22,14 +22,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			return res.status(401).json({ message: "unauthorized" });
 		}
 		try {
-			const result = await prisma.post.delete({
+			const result = await prisma.post.update({
+				data: {
+					title: req.body.title,
+				},
 				where: {
 					id: postId,
 				},
 			});
 			res.status(204).json(result);
 		} catch (err) {
-			res.status(403).json({ err: "Error has occured whilst making a post" });
+			res.status(403).json({ err: "Error has occured on update your post" });
 		}
 	}
 }

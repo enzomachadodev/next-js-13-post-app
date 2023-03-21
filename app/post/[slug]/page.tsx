@@ -36,7 +36,7 @@ export default function PostDetail(url: URL) {
 			/>
 			<AddComments id={data?.id} />
 			{data?.comments?.map((comment) => (
-				<div key={comment.id} className="my-6 bg-white p-8 rounded-md">
+				<div key={comment.id} className="my-6 bg-white dark:bg-slate-700 p-8 rounded-md">
 					<div className="flex items-center gap-2">
 						<Image
 							width={24}

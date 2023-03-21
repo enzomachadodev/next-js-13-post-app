@@ -53,10 +53,11 @@ export default function AddComments({ id }: AddCommentProps) {
 			<div className="flex flex-col my-2">
 				<input
 					onChange={(e) => setTitle(e.target.value)}
+					placeholder="Write a comment about it..."
 					value={title}
 					type="text"
 					name="title"
-					className="p-4 text-lg rounded-md my-2"
+					className="p-4 text-lg rounded-md my-2 bg-white dark:bg-gray-500"
 				/>
 			</div>
 			<div className=" flex items-center gap-2">
@@ -69,7 +70,7 @@ export default function AddComments({ id }: AddCommentProps) {
 				</button>
 				<p
 					className={`font-bold  ${
-						title.length > 300 ? "text-red-700" : "text-gray-700"
+						title.length > 300 ? "text-red-700" : "text-gray-700 dark:text-white"
 					} `}
 				>{`${title.length}/300`}</p>
 			</div>

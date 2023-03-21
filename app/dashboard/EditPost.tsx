@@ -4,8 +4,10 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import Toggle from "./Toggle";
+import DeleteModal from "./DeleteModal";
 import toast from "react-hot-toast";
+import { FiTrash, FiEdit } from "react-icons/fi";
+import EditModal from "./EditModal";
 
 type EditProps = {
 	id: string;
@@ -20,33 +22,17 @@ type EditProps = {
 };
 
 export default function EditPost({ avatar, name, title, comments, id }: EditProps) {
-	const [toggle, setToggle] = useState(false);
+	const [deleteModal, setDeleteModal] = useState(false);
+	const [editModal, setEditModal] = useState(false);
 	const queryClient = useQueryClient();
 
 	const { mutate } = useMutation(
-		async (id: string) => await axios.delete("api/posts/deletePost", { data: id }),
-		{
-			onError: (error) => {
-				console.log(error);
-				toast.dismiss();
-				toast.error("Error deleting that post");
-			},
-			onSuccess: (data) => {
-				toast.dismiss();
-				toast.success("Your post has been deleted");
-				queryClient.invalidateQueries(["auth-posts"]);
-			},
-		}
+		async (id: string) => await axios.patch("/api/posts/editPost", { data: id })
 	);
-
-	const deletePost = () => {
-		toast.loading("Deleting yout post");
-		mutate(id);
-	};
 
 	return (
 		<>
-			<div className="bg-white my-8 p-8 rounded-lg">
+			<div className="bg-white dark:bg-slate-700 my-8 p-8 rounded-lg">
 				<div className="flex items-center gap-2">
 					<Image
 						width={32}
@@ -55,24 +41,35 @@ export default function EditPost({ avatar, name, title, comments, id }: EditProp
 						alt="avatar"
 						className="rounded-full"
 					/>
-					<h3 className="font-bold text-gray-700">{name}</h3>
+					<h3 className="font-bold text-gray-700 dark:text-white">{name}</h3>
 				</div>
 				<div className="my-8">
 					<p className="break-all">{title}</p>
 				</div>
 				<div className="flex items-center gap-4">
-					<p className="text-sm font-bold text-gray-700">{comments?.length} Comments</p>
+					<p className="text-sm font-bold text-gray-700 dark:text-white">
+						{comments?.length} Comments
+					</p>
 					<button
 						onClick={(e) => {
-							setToggle(true);
+							setDeleteModal(true);
 						}}
-						className="text-sm font-bold text-red-500"
+						className="text-lg font-bold text-red-500"
 					>
-						Delete
+						<FiTrash />
+					</button>
+					<button
+						onClick={(e) => {
+							setEditModal(true);
+						}}
+						className="text-lg font-bold "
+					>
+						<FiEdit />
 					</button>
 				</div>
 			</div>
-			{toggle && <Toggle deletePost={deletePost} setToggle={setToggle} />}
+			{deleteModal && <DeleteModal id={id} setDeleteModal={setDeleteModal} />}
+			{editModal && <EditModal id={id} setEditModal={setEditModal} />}
 		</>
 	);
 }

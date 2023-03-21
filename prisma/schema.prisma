@@ -20,6 +20,7 @@ model User {
   sessions      Session[]
   posts         Post[]
   comments      Comment[]
+  hearts        Heart[]
 }
 
 
@@ -32,6 +33,15 @@ model Post {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   comments  Comment[]
+  hearts    Heart[]
+}
+
+model Heart {
+  id     String @id @default(cuid())
+  postId String
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Comment {

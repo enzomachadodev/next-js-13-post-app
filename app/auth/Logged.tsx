@@ -4,45 +4,32 @@ import Image from "next/image";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { BsSun, BsMoon } from "react-icons/bs";
 
 type User = {
 	image: string;
 };
 
 export default function Logged({ image }: User) {
-	const { systemTheme, theme, setTheme } = useTheme();
+	const { theme, setTheme } = useTheme();
 	const [currentTheme, setCurrentTheme] = useState<string | undefined>("light");
 	const [open, setOpen] = useState(false);
-	const menuRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		setCurrentTheme(theme);
 	}, [theme]);
 
-	useEffect(() => {
-		function handleClickOutside(event: MouseEvent): void {
-			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-				setOpen(false);
-			}
-		}
-
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [menuRef]);
-
 	return (
 		<div className="flex gap-8 items-center">
 			<button
 				onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-				className="bg-gray-700 text-white text-sm px-6 py-2 rounded-md"
+				className="text-2xl "
 			>
-				{currentTheme}
+				{currentTheme === "dark" ? <BsMoon /> : <BsSun />}
 			</button>
 			<div className="relative">
-				<button onClick={() => setOpen(true)}>
+				<button onClick={() => setOpen(!open)}>
 					<Image
 						width={64}
 						height={64}
@@ -53,12 +40,13 @@ export default function Logged({ image }: User) {
 					/>
 				</button>
 				{open && (
-					<div
-						ref={menuRef}
-						className="absolute right-0 mt-2 w-48 bg-white shadow-lg shadow-gray-700/20 rounded-md py-2"
-					>
+					<div className="absolute right-0 mt-2 w-48 bg-white shadow-lg shadow-gray-700/20 rounded-md py-2">
 						<Link
 							href={"/dashboard"}
+							passHref
+							onClick={(e) => {
+								setOpen(false);
+							}}
 							className="w-full flex items-start px-4 py-2 text-gray-800 hover:bg-gray-700 hover:text-white"
 						>
 							My Profile

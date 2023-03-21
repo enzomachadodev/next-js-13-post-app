@@ -18,7 +18,9 @@ export default function RootLayout({ children }) {
 					rel="stylesheet"
 				/>
 			</head>
-			<body className={`mx-4 md:mx-48 xl:mx-961 bg-gray-200`}>
+			<body
+				className={`mx-4 md:mx-48 xl:mx-961 bg-gray-200 dark:bg-slate-900 transition duration-300`}
+			>
 				<Providers>
 					<Nav />
 					{children}
